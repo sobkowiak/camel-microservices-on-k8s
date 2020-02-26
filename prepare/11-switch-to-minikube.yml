@@ -1,0 +1,13 @@
+---
+- hosts: local
+  tasks:
+  - name: Update symbolic link
+    file:
+      src: "{{minikube_home}}/.kube"
+      dest: "{{general_home}}/.kube"
+      state: link
+  - name: Generate envorinment variables
+    template:
+      src: minikube-setenv.sh.j2
+      dest: setenv.sh
+      mode: '0700'

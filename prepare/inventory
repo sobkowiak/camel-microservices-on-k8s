@@ -12,11 +12,12 @@ graalvm_ce_home={{graalvm_ce_base}}/graalvm-ce
 graalvm_ce_java_version=8
 graalvm_ce_version=latest
 
-minikube_version=1.6.2
-minikube_kubernetes_version=v1.14.0
+minikube_version=1.7.3
+minikube_kubernetes_version=v1.15.0
 minikube_home={{general_software_base}}/minikube-{{minikube_version}}
 minikube_kubeconfig={{minikube_home}}/.kube/config
 minikube_helm_home={{minikube_home}}/.helm
+minikube_istio_version=1.3.6
 
 knative_client_version=0.11.0
 kamel_version=latest

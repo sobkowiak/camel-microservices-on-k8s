@@ -29,12 +29,6 @@
       dest: "{{bin_folder}}/stern"
       mode: '0700'
 
-  - name: Generate envorinment variables
-    template:
-      src: setenv.sh.j2
-      dest: setenv.sh
-      mode: '0700'
-
   - name: Download kubens
     get_url:
       url: https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens

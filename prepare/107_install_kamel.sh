@@ -2,6 +2,15 @@
 
 source setenv.sh
 
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: knativetutorial
+EOF
+
+kubens knativetutorial
+
 #kamel install
 kamel install --operator-image=camelk/camel-k:1.0.0-RC2 \
   --maven-repository=https://repository.apache.org/content/repositories/orgapachecamel-1178 \
@@ -12,3 +21,5 @@ kamel install --operator-image=camelk/camel-k:1.0.0-RC2 \
 # kubectl -n knative-serving get cm config-deployment -oyaml \
 #  | yq w - data.registriesSkippingTagResolving $val \
 #  | kubectl apply -f -
+
+watch kubectl get pods --namespace knativetutorial

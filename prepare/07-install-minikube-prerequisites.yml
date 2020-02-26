@@ -12,11 +12,6 @@
     file:
       path: "{{minikube_home}}/.kube"
       state: directory
-  - name: Update symbolic link
-    file:
-      src: "{{minikube_home}}/.kube"
-      dest: "{{general_home}}/.kube"
-      state: link
   - name: Create a helm home
     file:
       path: "{{minikube_helm_home}}"

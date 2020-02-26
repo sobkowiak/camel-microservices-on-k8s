@@ -25,7 +25,7 @@
           kamel_version: "{{ _latest_release.json.tag_name }}"
     when: kamel_version == "latest"
 
-  - name: Check if kn is already installed
+  - name: Check if kamel is already installed
     stat:
       path: "{{bin_folder}}/kamel"
     register: is_installed

@@ -1,0 +1,6 @@
+---
+- hosts: local
+  tasks:
+  - name: Set bin directory
+    set_fact:
+      bin_folder: "{{general_software_base}}/bin"
