@@ -1,0 +1,76 @@
+---
+- hosts: local
+  tasks:
+
+  - name: Set bin directory
+    set_fact:
+      bin_folder: "{{general_software_base}}/bin"
+
+  - name: Create a directory for binaries if it does not exist
+    file:
+      path: "{{bin_folder}}"
+      state: directory
+
+  - name: Download yq
+    get_url:
+      url: https://github.com/mikefarah/yq/releases/download/3.1.0/yq_linux_amd64
+      dest: "{{bin_folder}}/yq"
+      mode: '0700'
+
+  - name: Download hey
+    get_url:
+      url: https://storage.googleapis.com/hey-release/hey_linux_amd64
+      dest: "{{bin_folder}}/hey"
+      mode: '0700'
+
+  - name: Download stern
+    get_url:
+      url: https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64
+      dest: "{{bin_folder}}/stern"
+      mode: '0700'
+
+  - name: Generate envorinment variables
+    template:
+      src: setenv.sh.j2
+      dest: setenv.sh
+      mode: '0700'
+
+  - name: Download kubens
+    get_url:
+      url: https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens
+      dest: "{{bin_folder}}/kubens"
+      mode: '0700'
+
+  - name: Download kubectx
+    get_url:
+      url: https://raw.githubusercontent.com/ahmetb/kubectx/master/kubectx
+      dest: "{{bin_folder}}/kubectx"
+      mode: '0600'
+
+  - name: Install helm
+    block:
+      - name: Check if helm is already installed
+        stat:
+          path: "{{bin_folder}}/helm"
+        register: is_installed
+      - name: Download helm
+        get_url:
+          url: "https://get.helm.sh/helm-{{helm_version}}-linux-amd64.tar.gz"
+          dest: "~/.ansible/tmp/helm-{{helm_version}}-linux-amd64.tar.gz"
+        when: not is_installed.stat.exists
+
+      - name: Unarchive helm binaries
+        unarchive:
+          src: "~/.ansible/tmp/helm-{{helm_version}}-linux-amd64.tar.gz"
+          dest: "{{bin_folder}}"
+          extra_opts: [--strip-components=1]
+          exclude:
+            - "LICENSE"
+            - "README.md"
+          mode: '0700'
+        when: not is_installed.stat.exists
+
+      - name: Clean downloaded files
+        file:
+          state: absent
+          path: "~/.ansible/tmp/helm-{{helm_version}}-linux-amd64.tar.gz"

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export WKS_HOME={{general_wks_base}}
+export SOFTWARE_BASE={{general_software_base}}
+export GRAALVM_HOME={{graalvm_ce_home}}
+
+export MINIKUBE_VERSION={{minikube_version}}
+export KUBERNETES_VERSION={{minikube_kubernetes_version}}
+export MINIKUBE_HOME={{minikube_home}}
+export KUBECTL_PATH=$MINIKUBE_HOME/.minikube/cache/$KUBERNETES_VERSION
+#export KUBE_EDITOR="vim"
+export KUBECONFIG={{minikube_kubeconfig}}
+export HELM_HOME={{minikube_helm_home}}
+
+export PATH=$GRAALVM_HOME/bin:$SOFTWARE_BASE/bin:$KUBECTL_PATH:$PATH

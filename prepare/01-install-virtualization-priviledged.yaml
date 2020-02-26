@@ -1,0 +1,13 @@
+---
+- hosts: local
+  become: yes
+  become_method: sudo
+  tasks:
+  - name: Install libvirtd
+    dnf:
+      name: '@virtualization'
+  - name: Start and enable libvirtd service
+    service:
+      name: libvirtd
+      state: started
+      enabled: yes

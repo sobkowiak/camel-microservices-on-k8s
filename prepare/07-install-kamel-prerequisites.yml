@@ -1,0 +1,55 @@
+---
+- hosts: local
+  tasks:
+  - name: Set bin directory
+    set_fact:
+      bin_folder: "{{general_software_base}}/bin"
+
+  - name: Check version number if kamel_version set to latest
+    block:
+      - name: Get latest release
+        uri:
+          url: https://api.github.com/repos/apache/camel-k/releases/latest
+          method: GET
+          return_content: true
+          status_code: 200
+          body_format: json
+          validate_certs: false
+        no_log: true
+        register: _latest_release
+        until: _latest_release.status == 200
+        retries: 5
+
+      - name: Set kamel_version
+        set_fact:
+          kamel_version: "{{ _latest_release.json.tag_name }}"
+    when: kamel_version == "latest"
+
+  - name: Check if kn is already installed
+    stat:
+      path: "{{bin_folder}}/kamel"
+    register: is_installed
+
+  - name: Install kamel
+    block:
+    - name: Download kamel
+      get_url:
+        url: "https://github.com/apache/camel-k/releases/download/{{kamel_version}}/camel-k-client-{{kamel_version}}-linux-64bit.tar.gz"
+        dest: "~/.ansible/tmp/camel-k-client-{{kamel_version}}-linux-64bit.tar.gz"
+      when: not is_installed.stat.exists
+
+    - name: Unarchive kamel binaries
+      unarchive:
+        src: "~/.ansible/tmp/camel-k-client-{{kamel_version}}-linux-64bit.tar.gz"
+        dest: "{{bin_folder}}"
+        exclude:
+          - "NOTICE"
+          - "LICENSE"
+          - "kamel.*"
+        mode: '0700'
+      when: not is_installed.stat.exists
+
+    - name: Clean downloaded files
+      file:
+        state: absent
+        path: "~/.ansible/tmp/camel-k-client-{{kamel_version}}-linux-64bit.tar.gz"

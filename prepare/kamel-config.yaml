@@ -1,0 +1,13 @@
+kamel:
+  install:
+    #kits: '[js,yaml,java,kotlin,groovy,knative]'
+    kits:
+      - js
+      - yaml
+      - java
+      - kotlin
+      - groovy
+      - knative
+    maven-repositories: '[https://repository.apache.org/content/repositories/orgapachecamel-1178]'
+    olm: false
+    operator-image: camelk/camel-k:1.0.0-RC2

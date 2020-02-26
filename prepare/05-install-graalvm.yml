@@ -1,0 +1,67 @@
+---
+- hosts: local
+  tasks:
+  - name: Create a minikube home
+    file:
+      path: "{{graalvm_ce_base}}"
+      state: directory
+  - name: Check version number if graalvm_ce_version set to latest
+    block:
+      - name: Get latest release
+        uri:
+          url: https://api.github.com/repos/graalvm/graalvm-ce-builds/releases/latest
+          method: GET
+          return_content: true
+          status_code: 200
+          body_format: json
+          validate_certs: false
+        no_log: true
+        register: _latest_release
+        until: _latest_release.status == 200
+        retries: 5
+
+      - name: Set graalvm_ce_version
+        set_fact:
+          graalvm_ce_version: "{{ _latest_release.json.tag_name[3:] }}"
+    when: graalvm_ce_version == "latest"
+
+  - name: Check if graalvm_ce_version is already installed
+    stat:
+      path: "{{graalvm_ce_base}}/graalvm-ce-java{{graalvm_ce_java_version}}-{{graalvm_ce_version}}"
+    register: is_installed
+
+  - name: Download graalvm-ce
+    get_url:
+      url: "https://github.com/graalvm/graalvm-ce-builds/releases/download/\
+        vm-{{graalvm_ce_version}}/graalvm-ce-java{{graalvm_ce_java_version}}-\
+        linux-amd64-{{graalvm_ce_version}}.tar.gz"
+      dest: "~/.ansible/tmp/graalvm-ce-java{{graalvm_ce_java_version}}-{{graalvm_ce_version}}.\
+        linux-amd64.tar.gz"
+    when: not is_installed.stat.exists
+
+  - name: Unarchive graalvm-ce binaries
+    unarchive:
+      src: "~/.ansible/tmp/graalvm-ce-java{{graalvm_ce_java_version}}-{{graalvm_ce_version}}.linux-amd64.tar.gz"
+      dest: "{{graalvm_ce_base}}"
+      creates: "{{graalvm_ce_base}}/graalvm-ce-java{{graalvm_ce_java_version}}-{{graalvm_ce_version}}"
+      remote_src: false
+      exclude:
+        - "graalvm-ce-java{{graalvm_ce_java_version}}-{{graalvm_ce_version}}/src.zip"
+    when: not is_installed.stat.exists
+
+  - name: Clean downloaded files
+    file:
+      state: absent
+      path: "~/.ansible/tmp/graalvm-ce-{{graalvm_ce_version}}.\
+        linux-amd64.tar.gz"
+
+  - name: Update symbolic link
+    file:
+      src: "{{graalvm_ce_base}}/graalvm-ce-java{{graalvm_ce_java_version}}-{{graalvm_ce_version}}"
+      dest: "{{graalvm_ce_home}}"
+      state: link
+
+  - name: Install native image
+    shell:
+      cmd: "{{graalvm_ce_home}}/bin/gu install native-image"
+    when: not is_installed.stat.exists

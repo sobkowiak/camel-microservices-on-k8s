@@ -1,0 +1,15 @@
+---
+- hosts: local
+  become: yes
+  become_method: sudo
+  tasks:
+  - name: Install prerequisites
+    dnf:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - siege
+      - httpie
+      - httpd-tools
+      - jq
