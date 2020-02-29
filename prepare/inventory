@@ -13,7 +13,7 @@ graalvm_ce_java_version=8
 graalvm_ce_version=latest
 
 minikube_version=1.7.3
-minikube_kubernetes_version=v1.15.0
+minikube_kubernetes_version=v1.17.3
 minikube_home={{general_software_base}}/minikube-{{minikube_version}}
 minikube_kubeconfig={{minikube_home}}/.kube/config
 minikube_helm_home={{minikube_home}}/.helm

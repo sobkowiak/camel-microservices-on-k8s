@@ -10,7 +10,7 @@ source setenv.sh
 
 
 curl -L https://git.io/getLatestIstio | sh -
-cd istio-${ISTIO_VERSION}
+pushd istio-${ISTIO_VERSION} > /dev/null
 
 for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
 
@@ -50,7 +50,7 @@ helm template --namespace=istio-system \
   --set gateways.istio-ingressgateway.autoscaleMax=2 \
   `# Set pilot trace sampling to 100%` \
   --set pilot.traceSampling=100 \
-  --set global.mtls.auto=false \
+  `#--set global.mtls.auto=false` \
   install/kubernetes/helm/istio \
   > ./istio-lean.yaml
 
@@ -65,7 +65,7 @@ helm template --namespace=istio-system \
   --set gateways.istio-ingressgateway.enabled=false \
   --set gateways.istio-egressgateway.enabled=false \
   --set gateways.istio-ilbgateway.enabled=false \
-  --set global.mtls.auto=false \
+  `#--set global.mtls.auto=false` \
   install/kubernetes/helm/istio \
   -f install/kubernetes/helm/istio/example-values/values-istio-gateways.yaml \
   | sed -e "s/custom-gateway/cluster-local-gateway/g" -e "s/customgateway/clusterlocalgateway/g" \
@@ -74,7 +74,9 @@ helm template --namespace=istio-system \
 kubectl apply -f istio-lean.yaml &&\
 kubectl apply -f istio-local-gateway.yaml
 
-watch kubectl get pods --namespace istio-system
+echo "Waiting for Istio to become ready"
+sleep 5; while echo && kubectl get pods -n istio-system | grep -v -E "(Running|Completed|STATUS)"; do sleep 5; done
 
-cd ../
+
+popd > /dev/null
 rm -rf istio-${ISTIO_VERSION}

@@ -11,4 +11,5 @@ source setenv.sh
 kubectl apply --selector networking.knative.dev/certificate-provider!=cert-manager \
   --filename https://github.com/knative/serving/releases/download/v0.12.0/serving.yaml
 
-watch kubectl get pods --namespace knative-serving
+echo "Waiting for Knative Serving to become ready"
+sleep 5; while echo && kubectl get pods -n knative-serving | grep -v -E "(Running|Completed|STATUS)"; do sleep 5; done

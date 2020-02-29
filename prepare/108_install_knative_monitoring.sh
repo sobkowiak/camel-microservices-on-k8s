@@ -13,4 +13,5 @@ kubectl apply --selector networking.knative.dev/certificate-provider!=cert-manag
 
 kubectl label nodes --all beta.kubernetes.io/fluentd-ds-ready="true"
 
-watch kubectl get pods --namespace knative-monitoring
+echo "Waiting for Knative monitoring to become ready"
+sleep 5; while echo && kubectl get pods -n knative-monitoring | grep -v -E "(Running|Completed|STATUS)"; do sleep 5; done
