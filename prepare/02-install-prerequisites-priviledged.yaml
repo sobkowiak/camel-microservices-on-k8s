@@ -13,3 +13,7 @@
       - httpie
       - httpd-tools
       - jq
+      - gcc
+      - glibc-devel
+      - zlib-devel
+      - libstdc++-static
