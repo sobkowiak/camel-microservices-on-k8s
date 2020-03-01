@@ -1,0 +1,78 @@
+---
+- hosts: local
+  tasks:
+
+  - name: Set repositories directory
+    set_fact:
+      repos_folder: "{{general_wks_base}}/repos"
+
+  - name: Create a directory for binaries if it does not exist
+    file:
+      path: "{{repos_folder}}"
+      state: directory
+
+  - name: Checkout Camel-K repository
+    git:
+      repo: 'https://github.com/apache/camel-k.git'
+      dest: "{{repos_folder}}/camel-k"
+      version: HEAD
+
+  - name: Checkout Camel repository
+    git:
+      repo: 'https://github.com/apache/camel.git'
+      dest: "{{repos_folder}}/camel"
+      version: HEAD
+
+  - name: Checkout Camel Quarkus repository
+    git:
+      repo: 'https://github.com/apache/camel-quarkus.git'
+      dest: "{{repos_folder}}/camel-quarkus"
+      version: HEAD
+
+  - name: Checkout Camel Samples repository
+    git:
+      repo: 'https://github.com/apache/camel-examples.git'
+      dest: "{{repos_folder}}/camel-examples"
+      version: HEAD
+
+  - name: Checkout Knative Tutorial (v0.12.x) repository
+    git:
+      repo: 'https://github.com/redhat-developer-demos/knative-tutorial.git'
+      dest: "{{repos_folder}}/knative-tutorial-v0.12.x"
+      version: "release/v0.12.x"
+
+  - name: Checkout Knative Tutorial (v0.7.x) repository
+    git:
+      repo: 'https://github.com/redhat-developer-demos/knative-tutorial.git'
+      dest: "{{repos_folder}}/knative-tutorial-0.7.x"
+      version: "release/0.7.x"
+
+  - name: Checkout sidebyside repository
+    git:
+      repo: 'https://github.com/burrsutter/sidebyside.git'
+      dest: "{{repos_folder}}/sidebyside"
+      version: HEAD
+
+  - name: Checkout SAGA Quickstart repository
+    git:
+      repo: 'https://github.com/nicolaferraro/camel-saga-quickstart.git'
+      dest: "{{repos_folder}}/camel-saga-quickstart"
+      version: HEAD
+
+  - name: Checkout Camel K + Knative demo repository
+    git:
+      repo: 'https://github.com/nicolaferraro/camel-k-native-demo.git'
+      dest: "{{repos_folder}}/camel-k-native-demo"
+      version: HEAD
+
+  - name: Checkout Camel K + Quarkus demo repository
+    git:
+      repo: 'https://github.com/lburgazzoli/camel-k-quarkus-demo.git'
+      dest: "{{repos_folder}}/camel-k-quarkus-demo"
+      version: HEAD
+
+  - name: Checkout Camel K Chuck Bot demo repository
+    git:
+      repo: 'https://github.com/nicolaferraro/camel-k-chuck-bot.git'
+      dest: "{{repos_folder}}/camel-k-chuck-bot"
+      version: HEAD

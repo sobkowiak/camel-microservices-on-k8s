@@ -4,18 +4,6 @@
   - name: Set bin directory
     set_fact:
       bin_folder: "{{general_software_base}}/bin"
-  - name: Create a minikube home
-    file:
-      path: "{{minikube_home}}"
-      state: directory
-  - name: Create a kubeconfig directory
-    file:
-      path: "{{minikube_home}}/.kube"
-      state: directory
-  - name: Create a helm home
-    file:
-      path: "{{minikube_helm_home}}"
-      state: directory
   - name: Download kubectl
     get_url:
       url: https://storage.googleapis.com/kubernetes-release/release/{{minikube_kubernetes_version}}/bin/linux/amd64/kubectl
