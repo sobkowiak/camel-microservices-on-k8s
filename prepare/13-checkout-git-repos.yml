@@ -29,6 +29,12 @@
       dest: "{{repos_folder}}/camel-quarkus"
       version: HEAD
 
+  - name: Checkout Camel Spring Boot repository
+    git:
+      repo: 'https://github.com/apache/camel-spring-boot.git'
+      dest: "{{repos_folder}}/camel-spring-boot.git"
+      version: HEAD
+
   - name: Checkout Camel Samples repository
     git:
       repo: 'https://github.com/apache/camel-examples.git'
